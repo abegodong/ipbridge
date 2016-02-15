@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # chkconfig: 2345 99 01
 # description: SoftEther VPN Client
 DAEMON=/usr/local/vpnclient/vpnclient
@@ -9,7 +9,7 @@ CLIENT_NETBLOCK=[CLIENT_NETBLOCK]
 CLIENT_GATEWAY=[CLIENT_GATEWAY]
 CLIENT_NETWORK=[CLIENT_NETWORK]
 IP_TABLE=[IP_TABLE]
-DEFAULT_ROUTE=(ip route | grep "default.*")
+DEFAULT_ROUTE=$(ip route | grep "default.*")
 test -x $DAEMON || exit 0
 case "$1" in
 start)
