@@ -35,8 +35,14 @@ WARNING: You might lose remote access connection, data, intellectual property, e
 
 1. Gather all the information you'd need: IP Address (e.g. 10.0.0.10), network mask bits (e.g. /24), gateway ip (e.g. 10.0.0.1), and network (e.g. 10.0.0.0). 
 2. Run vpnserver.sh in SERVER A that you have a lot of IP to share, this will install Softether VPN server and configure it.
+```
+wget https://raw.githubusercontent.com/abegodong/ipbridge/master/vpnserver.sh && bash vpnserver.sh
+```
 3. Ensure that you unassign IP that you want to use in other servers from the SERVER A virtual network interfaces.
 4. Run vpnclient.sh in SERVER B that you want to assign the IP to, this will install Softether VPN client and configure it.
+```
+wget https://raw.githubusercontent.com/abegodong/ipbridge/master/vpnclient.sh && bash vpnclient.sh
+```
 5. Try to ping other IP in Network A from server B, then wait few minutes and test the new IP (browsing, etc ...).
 6. If you need to add more IPs in server B, simply run: `ip addr add ${CLIENT_IP}/${CLIENT_NETBLOCK} dev vpn_vpn` , for example: `ip addr add 10.0.0.10/24 dev vpn_vpn`
 7. That's it, you can run vpnclient.sh in other servers as needed.
