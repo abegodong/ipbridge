@@ -1,0 +1,42 @@
+#!/bin/sh
+# chkconfig: 2345 99 01
+# description: SoftEther VPN Client
+DAEMON=/usr/local/vpnclient/vpnclient
+LOCK=/var/lock/subsys/vpnclient
+SERVER_IP=[SERVER_IP]
+CLIENT_IP=[CLIENT_IP]
+CLIENT_NETBLOCK=[CLIENT_NETBLOCK]
+CLIENT_GATEWAY=[CLIENT_GATEWAY]
+CLIENT_NETWORK=[CLIENT_NETWORK]
+IP_TABLE=[IP_TABLE]
+DEFAULT_ROUTE=(ip route | grep "default.*")
+test -x $DAEMON || exit 0
+case "$1" in
+start)
+$DAEMON start
+touch $LOCK
+sleep 1
+ip addr add ${CLIENT_IP}/${CLIENT_NETBLOCK} dev vpn_vpn
+ip route add ${CLIENT_NETWORK}/${CLIENT_NETBLOCK} dev vpn_vpn src ${CLIENT_IP} table ${IP_TABLE}
+ip route add default via ${CLIENT_GATEWAY} dev vpn_vpn table ${IP_TABLE}
+ip route add ${SERVER_IP}/32${DEFAULT_ROUTE/default/}table ${IP_TABLE}
+ip rule add from ${CLIENT_NETWORK}/${CLIENT_NETBLOCK} table ${IP_TABLE}
+ip rule add to ${CLIENT_NETWORK}/${CLIENT_NETBLOCK} table ${IP_TABLE}
+;;
+stop)
+ip route flush table vpntable
+ip rule del table ${IP_TABLE}
+ip rule del table ${IP_TABLE}
+$DAEMON stop
+rm $LOCK
+;;
+restart)
+$DAEMON stop
+sleep 3
+$DAEMON start
+;;
+*)
+echo "Usage: $0 {start|stop|restart}"
+exit 1
+esac
+exit 0
